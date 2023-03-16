@@ -1,58 +1,74 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <main>
+    <h1>日本百名山</h1>
+    <div id="map"></div>
+  </main>
 </template>
 
-<script>
+<script lang="ts">
+import { GmapMarker } from 'vue2-google-maps'
+import axios from 'axios'
+
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  name: 'JapanMountains',
+  data() {
+    return {
+      map: null,
+      markers: []
+    }
+  },
+  mounted() {
+    this.initMap()
+    this.getMountainData()
+  },
+  methods: {
+    initMap() {
+      const center = { lat: 37.500837, lng: 137.499528 } // 日本の中心地
+      this.map = new google.maps.Map(document.getElementById('map'), {
+        center: center,
+        zoom: 5
+      })
+    },
+    getMountainData() {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/SPREADSHEET_ID/values/Sheet1?key=API_KEY`
+      axios.get(url)
+        .then((response) => {
+          const data = response.data.values.slice(1) // 1行目はヘッダーなのでスキップ
+          for (let i = 0; i < data.length; i++) {
+            const mountain = data[i]
+            const name = mountain[0]
+            const lat = parseFloat(mountain[1])
+            const lng = parseFloat(mountain[2])
+            const marker = {
+              position: { lat: lat, lng: lng },
+              title: name
+            }
+            this.markers.push(marker)
+          }
+        })
+        .then(() => {
+          this.addMarkers()
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+    addMarkers() {
+      for (let i = 0; i < this.markers.length; i++) {
+        const marker = new GmapMarker({
+          position: this.markers[i].position,
+          map: this.map,
+          title: this.markers[i].title
+        })
+      }
+    }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+<style>
+#map {
+  height: 400px;
+  width: 100%;
 }
 </style>
