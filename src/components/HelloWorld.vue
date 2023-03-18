@@ -5,14 +5,23 @@
       :center="{lat:37, lng:138}"
       :zoom="7"
       map-type-id="terrain"
-      style="width: 500px; height: 500px"
+      style="width: auto; height: 90vh"
     >
+      <GmapInfoWindow
+          :content="info.content"
+          :opened="info.isOpen"
+          :position="info.position"
+          :options="info.options"
+      />
       <GmapMarker
         :key="index"
         v-for="(m, index) in markers"
         :position="{ lat: m.lat, lng: m.lng }"
         :clickable="true"
-        @click="center=m.position"
+        :icon="{
+          url: generateIconUrl(m)
+        }"
+        @click="toggleInfo(m)"
       />
     </GmapMap>
   </main>
@@ -26,39 +35,43 @@ export default {
   data() {
     return {
       map: null,
-      markers: []
+      markers: [],
+      info: {
+        isOpen: false,
+        content: null,
+        position: null,
+        options: {
+          content: 'hoge',
+          pixelOffset: {
+            width: 0,
+            height: -35
+          },
+        }
+      }
     }
   },
   mounted() {
-    this.initMap()
-    this.getMountainData()
   },
   created() {
     this.markers = mountainsData
   },
   methods: {
-    initMap() {
+    generateIconUrl(m) {
+      let url = "https://maps.google.com/mapfiles/ms/icons/<color>-dot.png"
+      const mountain_number = m["No."]
+      if (mountain_number<100) {
+        url = url.replace("<color>", "red")
+      } else if (mountain_number.toString().startsWith("2")) {
+        url = url.replace("<color>", "orange")
+      } else {
+        url = url.replace("<color>", "yellow")
+      }
+      return url
     },
-    getMountainData() {
-      // const url = `https://sheets.googleapis.com/v4/spreadsheets/103XN0NGfmb_5GqWeoLSd6y2s42Ho23tK09ju4jElzzo/values/Sheet1?key=AIzaSyDbuUv2T_wJvZ3P_dkCgzf-Zp-rgaTqwBo`
-      // axios.get(url)
-      //   .then((response) => {
-      //     const data = response.data.values.slice(1) // 1行目はヘッダーなのでスキップ
-      //     for (let i = 0; i < data.length; i++) {
-      //       const mountain = data[i]
-      //       const name = mountain[0]
-      //       const lat = parseFloat(mountain[1])
-      //       const lng = parseFloat(mountain[2])
-      //       const marker = {
-      //         position: { lat: lat, lng: lng },
-      //         title: name
-      //       }
-      //       this.markers.push(marker)
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.error(error)
-      //   })
+    toggleInfo(marker) {
+      this.info.isOpen = true
+      this.info.content = `<div>${marker["山名"]}</div>`
+      this.info.position = { lat: marker.lat, lng: marker.lng }
     },
   }
 }
