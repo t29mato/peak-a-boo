@@ -1,13 +1,25 @@
 <template>
   <main>
-    <h1>日本百名山</h1>
-    <div id="map"></div>
+    <h1>Peak a boo</h1>
+    <GmapMap
+      :center="{lat:37, lng:138}"
+      :zoom="7"
+      map-type-id="terrain"
+      style="width: 500px; height: 500px"
+    >
+      <GmapMarker
+        :key="index"
+        v-for="(m, index) in markers"
+        :position="{ lat: m.lat, lng: m.lng }"
+        :clickable="true"
+        @click="center=m.position"
+      />
+    </GmapMap>
   </main>
 </template>
 
 <script lang="ts">
-import { GmapMarker } from 'vue2-google-maps'
-import axios from 'axios'
+import mountainsData from '@/assets/100Mountains - 300.csv';
 
 export default {
   name: 'JapanMountains',
@@ -21,47 +33,33 @@ export default {
     this.initMap()
     this.getMountainData()
   },
+  created() {
+    this.markers = mountainsData
+  },
   methods: {
     initMap() {
-      const center = { lat: 37.500837, lng: 137.499528 } // 日本の中心地
-      this.map = new google.maps.Map(document.getElementById('map'), {
-        center: center,
-        zoom: 5
-      })
     },
     getMountainData() {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/SPREADSHEET_ID/values/Sheet1?key=API_KEY`
-      axios.get(url)
-        .then((response) => {
-          const data = response.data.values.slice(1) // 1行目はヘッダーなのでスキップ
-          for (let i = 0; i < data.length; i++) {
-            const mountain = data[i]
-            const name = mountain[0]
-            const lat = parseFloat(mountain[1])
-            const lng = parseFloat(mountain[2])
-            const marker = {
-              position: { lat: lat, lng: lng },
-              title: name
-            }
-            this.markers.push(marker)
-          }
-        })
-        .then(() => {
-          this.addMarkers()
-        })
-        .catch((error) => {
-          console.error(error)
-        })
+      // const url = `https://sheets.googleapis.com/v4/spreadsheets/103XN0NGfmb_5GqWeoLSd6y2s42Ho23tK09ju4jElzzo/values/Sheet1?key=AIzaSyDbuUv2T_wJvZ3P_dkCgzf-Zp-rgaTqwBo`
+      // axios.get(url)
+      //   .then((response) => {
+      //     const data = response.data.values.slice(1) // 1行目はヘッダーなのでスキップ
+      //     for (let i = 0; i < data.length; i++) {
+      //       const mountain = data[i]
+      //       const name = mountain[0]
+      //       const lat = parseFloat(mountain[1])
+      //       const lng = parseFloat(mountain[2])
+      //       const marker = {
+      //         position: { lat: lat, lng: lng },
+      //         title: name
+      //       }
+      //       this.markers.push(marker)
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error(error)
+      //   })
     },
-    addMarkers() {
-      for (let i = 0; i < this.markers.length; i++) {
-        const marker = new GmapMarker({
-          position: this.markers[i].position,
-          map: this.map,
-          title: this.markers[i].title
-        })
-      }
-    }
   }
 }
 </script>
