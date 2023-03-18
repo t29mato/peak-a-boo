@@ -1,8 +1,10 @@
 <template>
   <main>
-    <h1>Peak a boo</h1>
-    <label v-for="option in options" :key="option.value">
-      <input type="checkbox" :name="option.name" :value="option.value" v-model="selectedOptions"> {{ option.label }}
+    <h1>Peak_a_boo</h1>
+    <h2>Discover Japan's Top 300 Famous Mountains</h2>
+    <label v-for="option in options" :key="option.value" :style="{'background-color': option.color}">
+      <input type="checkbox" :name="option.name" :value="option.value" v-model="selectedOptions">
+      {{ option.label }}
     </label>
 
     <GmapMap
@@ -22,7 +24,7 @@
         :position="{ lat: m.lat, lng: m.lng }"
         :clickable="true"
         :icon="{
-          url: generateIconUrl(m)
+          url: generateIconUrl(m['category'])
         }"
         @click="toggleInfo(m)"
       />
@@ -38,9 +40,9 @@ export default {
   data() {
     return {
       options: [
-        { label: 'The 100', value: 100, name: 'option' },
-        { label: 'The 200', value: 200, name: 'option' },
-        { label: 'The 300', value: 300, name: 'option' }
+        { label: 'The 100', value: 100, name: 'option', color: 'red' },
+        { label: 'The 200', value: 200, name: 'option', color: 'orange' },
+        { label: 'The 300', value: 300, name: 'option', color: 'yellow' }
       ],
       selectedOptions: [100,200,300],
       map: null,
@@ -86,15 +88,17 @@ export default {
     }
   },
   methods: {
-    generateIconUrl(m) {
+    generateIconUrl(category) {
       let url = "https://maps.google.com/mapfiles/ms/icons/<color>-dot.png"
-      const mountain_ID = m["ID"]
-      if (mountain_ID<100) {
-        url = url.replace("<color>", "red")
-      } else if (mountain_ID.toString().startsWith("2")) {
-        url = url.replace("<color>", "orange")
-      } else {
-        url = url.replace("<color>", "yellow")
+      switch (category) {
+        case 100:
+          url = url.replace("<color>", "red")
+          break
+        case 200:
+          url = url.replace("<color>", "orange")
+          break
+        case 300:
+          url = url.replace("<color>", "yellow")
       }
       return url
     },
