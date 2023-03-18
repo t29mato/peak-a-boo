@@ -1,6 +1,10 @@
 <template>
   <main>
     <h1>Peak a boo</h1>
+    <label v-for="option in options" :key="option.value">
+      <input type="checkbox" :name="option.name" :value="option.value" v-model="selectedOptions"> {{ option.label }}
+    </label>
+
     <GmapMap
       :center="{lat:37, lng:138}"
       :zoom="7"
@@ -15,7 +19,7 @@
       />
       <GmapMarker
         :key="index"
-        v-for="(m, index) in markers"
+        v-for="(m, index) in filteredMarkers"
         :position="{ lat: m.lat, lng: m.lng }"
         :clickable="true"
         :icon="{
@@ -34,6 +38,12 @@ export default {
   name: 'JapanMountains',
   data() {
     return {
+      options: [
+        { label: 'The 100', value: 100, name: 'option' },
+        { label: 'The 200', value: 200, name: 'option' },
+        { label: 'The 300', value: 300, name: 'option' }
+      ],
+      selectedOptions: [100,200,300],
       map: null,
       markers: [],
       info: {
@@ -55,13 +65,36 @@ export default {
   created() {
     this.markers = mountainsData
   },
+  computed: {
+    filteredMarkers() {
+      const markers = []
+      console.log(this.selectedOptions)
+      if (this.selectedOptions.includes(100)) {
+        markers.push(...this.markers.filter(m => {
+          return m['category'] === 100
+        }))
+      }
+      if (this.selectedOptions.includes(200)) {
+        markers.push(...this.markers.filter(m => {
+          return m['category'] === 200
+        }))
+      }
+      if (this.selectedOptions.includes(300)) {
+        markers.push(...this.markers.filter(m => {
+          return m['category'] === 300
+        }))
+      }
+      return markers
+    }
+  },
   methods: {
     generateIconUrl(m) {
       let url = "https://maps.google.com/mapfiles/ms/icons/<color>-dot.png"
-      const mountain_number = m["No."]
-      if (mountain_number<100) {
+      const mountain_ID = m["ID"]
+      console.log(m)
+      if (mountain_ID<100) {
         url = url.replace("<color>", "red")
-      } else if (mountain_number.toString().startsWith("2")) {
+      } else if (mountain_ID.toString().startsWith("2")) {
         url = url.replace("<color>", "orange")
       } else {
         url = url.replace("<color>", "yellow")
