@@ -109,7 +109,9 @@ export default {
     ${m['name_ja']} (${m['elevation']})<br>
     ${m["name_en"]}<br>
     Difficulty: ${m['difficulty']}<br>
-    Schedule: ${m['rough_schedule_en']}
+    Schedule: ${m['rough_schedule_en']}<br>
+    <a href="https://yamap.com/search/mountains?keyword=${m['name_ja']}" target="_blank">Yamap</a>
+<!--    <a href="https://www.yamareco.com/modules/yamainfo/search_pt.php?searchkey=${encodeURI(m['name_ja'])}&request=1" target="_blank">YamaReco</a>-->
 </div>`
       this.info.position = { lat: m.lat, lng: m.lng }
     },
