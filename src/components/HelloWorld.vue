@@ -12,7 +12,6 @@
       style="width: auto; height: 90vh"
     >
       <GmapInfoWindow
-          :content="info.content"
           :opened="info.isOpen"
           :position="info.position"
           :options="info.options"
@@ -48,7 +47,7 @@ export default {
       markers: [],
       info: {
         isOpen: false,
-        content: null,
+        content: 'fuga',
         position: null,
         options: {
           content: 'hoge',
@@ -101,10 +100,16 @@ export default {
       }
       return url
     },
-    toggleInfo(marker) {
+    toggleInfo(m) {
       this.info.isOpen = true
-      this.info.content = `<div>${marker["山名"]}</div>`
-      this.info.position = { lat: marker.lat, lng: marker.lng }
+      this.info.options.content = `
+<div style="text-align: left">
+    ${m['name_ja']} (${m['elevation']})<br>
+    ${m["name_en"]}<br>
+    Difficulty: ${m['difficulty']}<br>
+    Schedule: ${m['rough_schedule_en']}
+</div>`
+      this.info.position = { lat: m.lat, lng: m.lng }
     },
   }
 }
