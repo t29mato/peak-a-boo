@@ -67,7 +67,6 @@ export default {
   computed: {
     filteredMarkers() {
       const markers = []
-      console.log(this.selectedOptions)
       if (this.selectedOptions.includes(100)) {
         markers.push(...this.markers.filter(m => {
           return m['category'] === 100
@@ -90,7 +89,6 @@ export default {
     generateIconUrl(m) {
       let url = "https://maps.google.com/mapfiles/ms/icons/<color>-dot.png"
       const mountain_ID = m["ID"]
-      console.log(m)
       if (mountain_ID<100) {
         url = url.replace("<color>", "red")
       } else if (mountain_ID.toString().startsWith("2")) {
