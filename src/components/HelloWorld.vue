@@ -17,6 +17,7 @@
           :opened="info.isOpen"
           :position="info.position"
           :options="info.options"
+          @closeclick="closeInfoWindow"
       />
       <GmapMarker
         :key="index"
@@ -89,6 +90,9 @@ export default {
     }
   },
   methods: {
+    closeInfoWindow() {
+      this.info.isOpen = false
+    },
     convertToPercentEncodedEucjp(str) {
       const unicodeArray = Encoding.stringToCode(str)
       const eucjpArray = Encoding.convert(unicodeArray, {
