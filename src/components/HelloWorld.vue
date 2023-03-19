@@ -20,8 +20,8 @@
           @closeclick="closeInfoWindow"
       />
       <GmapMarker
-        :key="index"
-        v-for="(m, index) in filteredMarkers"
+        :key="m['ID']"
+        v-for="m in filteredMarkers"
         :position="{ lat: m.lat, lng: m.lng }"
         :clickable="true"
         :icon="{
