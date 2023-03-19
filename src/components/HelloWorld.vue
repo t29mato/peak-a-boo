@@ -34,6 +34,7 @@
 
 <script lang="ts">
 import mountainsData from '@/assets/100Mountains - 300.csv';
+import Encoding from 'encoding-japanese';
 
 export default {
   name: 'JapanMountains',
@@ -88,6 +89,17 @@ export default {
     }
   },
   methods: {
+    convertToPercentEncodedEucjp(str) {
+      const unicodeArray = Encoding.stringToCode(str)
+      const eucjpArray = Encoding.convert(unicodeArray, {
+        to: 'EUC-JP',
+        from: 'UNICODE'
+      })
+      const hexArrayEncodedByPercent = eucjpArray.map((value) => {
+        return "%" + value.toString(16)
+      })
+      return hexArrayEncodedByPercent.join('')
+    },
     generateIconUrl(category) {
       let url = "https://maps.google.com/mapfiles/ms/icons/<color>-dot.png"
       switch (category) {
@@ -111,7 +123,7 @@ export default {
     Difficulty: ${m['difficulty']}<br>
     Schedule: ${m['rough_schedule_en']}<br>
     <a href="https://yamap.com/search/mountains?keyword=${m['name_ja']}" target="_blank">Yamap</a>
-<!--    <a href="https://www.yamareco.com/modules/yamainfo/search_pt.php?searchkey=${encodeURI(m['name_ja'])}&request=1" target="_blank">YamaReco</a>-->
+    <a href="https://www.yamareco.com/modules/yamainfo/search_pt.php?searchkey=${this.convertToPercentEncodedEucjp(m['name_ja'])}&request=1" target="_blank">YamaReco</a>
 </div>`
       this.info.position = { lat: m.lat, lng: m.lng }
     },
