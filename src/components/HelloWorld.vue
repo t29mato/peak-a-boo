@@ -6,6 +6,7 @@
       <input type="checkbox" :name="option.name" :value="option.value" v-model="selectedOptions">
       {{ option.label }}
     </label>
+    <input placeholder="name" type="text" v-model="mountainName" />
 
     <GmapMap
       :center="{lat:37, lng:138}"
@@ -41,6 +42,7 @@ export default {
   name: 'JapanMountains',
   data() {
     return {
+      mountainName: "",
       options: [
         { label: 'The 100', value: 100, name: 'option', color: 'red' },
         { label: 'The 200', value: 200, name: 'option', color: 'orange' },
@@ -70,7 +72,7 @@ export default {
   },
   computed: {
     filteredMarkers() {
-      const markers = []
+      let markers = []
       if (this.selectedOptions.includes(100)) {
         markers.push(...this.markers.filter(m => {
           return m['category'] === 100
@@ -85,6 +87,12 @@ export default {
         markers.push(...this.markers.filter(m => {
           return m['category'] === 300
         }))
+      }
+      if (this.mountainName) {
+        const name = this.mountainName
+        markers = markers.filter(m => {
+          return new RegExp(`${name}`, 'i').test(m["name_ja"]) || new RegExp(`${name}`, 'i').test(m["name_en"])
+        })
       }
       return markers
     }
