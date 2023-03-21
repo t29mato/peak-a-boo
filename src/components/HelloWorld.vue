@@ -6,7 +6,7 @@
       <input type="checkbox" :name="option.name" :value="option.value" v-model="selectedOptions">
       {{ option.label }}
     </label>
-    <input placeholder="name" type="text" v-model="mountainName" />
+    <input placeholder="name" type="text" v-model="mountainName" @input="closeInfoWindow" />
 
     <GmapMap
       :center="{lat:37, lng:138}"
