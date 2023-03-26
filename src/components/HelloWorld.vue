@@ -6,7 +6,14 @@
       <input type="checkbox" :name="option.name" :value="option.value" v-model="selectedOptions">
       {{ option.label }}
     </label>
-    <input placeholder="name" type="text" v-model="mountainName" @input="closeInfoWindow" />
+    <br>
+    <span>Physical difficulty</span>
+    <label v-for="difficulty in physicalDifficulties" :key="difficulty.value">
+      <input type="checkbox" :name="difficulty.name" :value="difficulty.value" v-model="selectedDifficulties">
+      {{ difficulty.label }}
+    </label>
+    <br>
+    <input placeholder="moutain name" type="text" v-model="mountainName" @input="closeInfoWindow" />
 
     <GmapMap
       :center="{lat:37, lng:138}"
@@ -48,12 +55,20 @@ export default {
         { label: 'The 200', value: 200, name: 'option', color: 'orange' },
         { label: 'The 300', value: 300, name: 'option', color: 'yellow' }
       ],
+      physicalDifficulties: [
+        { label: '☆1', value: 1, name: 'physicalDifficulty' },
+        { label: '☆2', value: 2, name: 'physicalDifficulty' },
+        { label: '☆3', value: 3, name: 'physicalDifficulty' },
+        { label: '☆4', value: 4, name: 'physicalDifficulty' },
+        { label: '☆5', value: 5, name: 'physicalDifficulty' },
+        { label: '☆6', value: 6, name: 'physicalDifficulty' },
+      ],
       selectedOptions: [100,200,300],
+      selectedDifficulties: [1,2,3,4,5,6],
       map: null,
       markers: [],
       info: {
         isOpen: false,
-        content: 'fuga',
         position: null,
         options: {
           content: 'hoge',
@@ -94,7 +109,23 @@ export default {
           return new RegExp(`${name}`, 'i').test(m["name_ja"]) || new RegExp(`${name}`, 'i').test(m["name_en"])
         })
       }
-      return markers
+
+      const selectedMarkers = []
+      for (let i = 1; i <= 6; i++) {
+        if (this.selectedDifficulties.includes(i)) {
+          selectedMarkers.push(...markers.filter(m => {
+            if (m['name_ja'] === "水晶岳") {
+              console.log("水晶岳", i, m)
+            }
+            if (selectedMarkers.map(marker => marker.id).includes(m.id)) {
+              return false
+            }
+
+            return m['physical_difficulty_min'] <= i && i <= m['physical_difficulty_max']
+          }))
+        }
+      }
+      return selectedMarkers
     }
   },
   methods: {
