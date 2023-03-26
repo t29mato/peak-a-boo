@@ -53,9 +53,9 @@ export default {
     return {
       mountainName: "",
       options: [
-        { label: 'The 100', value: 100, name: 'option', color: 'red' },
-        { label: 'The 200', value: 200, name: 'option', color: 'orange' },
-        { label: 'The 300', value: 300, name: 'option', color: 'yellow' }
+        { label: 'The 100', value: 1, name: 'option', color: 'red' },
+        { label: 'The 200', value: 2, name: 'option', color: 'orange' },
+        { label: 'The 300', value: 3, name: 'option', color: 'yellow' }
       ],
       physicalDifficulties: [
         { label: '☆1', value: 1, name: 'physicalDifficulty' },
@@ -65,8 +65,8 @@ export default {
         { label: '☆5', value: 5, name: 'physicalDifficulty' },
         { label: '☆6', value: 6, name: 'physicalDifficulty' },
       ],
-      selectedOptions: [100,200,300],
-      selectedDifficulties: [1,2,3,4,5,6],
+      selectedOptions: [],
+      selectedDifficulties: [],
       map: null,
       markers: [],
       info: {
@@ -89,21 +89,20 @@ export default {
   },
   computed: {
     filteredMarkers() {
-      let markers = []
-      if (this.selectedOptions.includes(100)) {
-        markers.push(...this.markers.filter(m => {
-          return m['category'] === 100
-        }))
-      }
-      if (this.selectedOptions.includes(200)) {
-        markers.push(...this.markers.filter(m => {
-          return m['category'] === 200
-        }))
-      }
-      if (this.selectedOptions.includes(300)) {
-        markers.push(...this.markers.filter(m => {
-          return m['category'] === 300
-        }))
+      let markers = this.markers
+      if (this.selectedOptions.length !== 0) {
+        const selectedMarkers = []
+        for (let i = 1; i <= 3; i++) {
+          if (this.selectedOptions.includes(i)) {
+            selectedMarkers.push(...markers.filter(m => {
+              if (selectedMarkers.map(marker => marker.id).includes(m.id)) {
+                return false
+              }
+              return m['category'] === i
+            }))
+          }
+        }
+        markers = selectedMarkers
       }
       if (this.mountainName) {
         const name = this.mountainName
@@ -112,19 +111,21 @@ export default {
         })
       }
 
-      const selectedMarkers = []
-      for (let i = 1; i <= 6; i++) {
-        if (this.selectedDifficulties.includes(i)) {
-          selectedMarkers.push(...markers.filter(m => {
-            if (selectedMarkers.map(marker => marker.id).includes(m.id)) {
-              return false
-            }
-
-            return m['physical_difficulty_min'] <= i && i <= m['physical_difficulty_max']
-          }))
+      if (this.selectedDifficulties.length !== 0) {
+        const selectedMarkers = []
+        for (let i = 1; i <= 6; i++) {
+          if (this.selectedDifficulties.includes(i)) {
+            selectedMarkers.push(...markers.filter(m => {
+              if (selectedMarkers.map(marker => marker.id).includes(m.id)) {
+                return false
+              }
+              return m['physical_difficulty_min'] <= i && i <= m['physical_difficulty_max']
+            }))
+          }
         }
+        return selectedMarkers
       }
-      return selectedMarkers
+      return markers
     }
   },
   methods: {
@@ -145,13 +146,13 @@ export default {
     generateIconUrl(category) {
       let url = "https://maps.google.com/mapfiles/ms/icons/<color>-dot.png"
       switch (category) {
-        case 100:
+        case 1:
           url = url.replace("<color>", "red")
           break
-        case 200:
+        case 2:
           url = url.replace("<color>", "orange")
           break
-        case 300:
+        case 3:
           url = url.replace("<color>", "yellow")
       }
       return url
