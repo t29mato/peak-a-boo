@@ -116,9 +116,6 @@ export default {
       for (let i = 1; i <= 6; i++) {
         if (this.selectedDifficulties.includes(i)) {
           selectedMarkers.push(...markers.filter(m => {
-            if (m['name_ja'] === "水晶岳") {
-              console.log("水晶岳", i, m)
-            }
             if (selectedMarkers.map(marker => marker.id).includes(m.id)) {
               return false
             }
