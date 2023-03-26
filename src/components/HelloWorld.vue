@@ -132,12 +132,19 @@ export default {
 <div style="text-align: left">
     ${m['name_ja']} (${m['elevation']})<br>
     ${m["name_en"]}<br>
-    Difficulty: ${m['difficulty']}<br>
+    Course constant: ${m['course_constant_min']} - ${m['course_constant_max']}<br>
+    Physical difficulty: ${this.showPhysicalDifficulty(m['physical_difficulty_min'],m['physical_difficulty_max'])}<br>
     Schedule: ${m['rough_schedule_en']}<br>
     <a href="https://yamap.com/search/mountains?keyword=${m['name_ja']}" target="_blank">Yamap</a>
     <a href="https://www.yamareco.com/modules/yamainfo/search_pt.php?searchkey=${this.convertToPercentEncodedEucjp(m['name_ja'])}&request=1" target="_blank">YamaReco</a>
 </div>`
       this.info.position = { lat: m.lat, lng: m.lng }
+    },
+    showPhysicalDifficulty(min, max) {
+      if (min === max) {
+        return min
+      }
+      return `${min} - ${max}`
     },
   }
 }
