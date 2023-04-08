@@ -167,6 +167,9 @@ export default {
     },
     toggleInfo(m) {
       this.info.isOpen = true
+      const report_form_url = process.env.VUE_APP_GOOGLE_FORM_REPORT_INCORRECT_MOUNTAIN_DATA.replace(
+          "{{mountain}}", ` ID: ${m['id']}%0A name_ja: ${m['name_ja']}%0A name_en: ${m['name_en']}`
+      )
       this.info.options.content = `
 <div style="text-align: left">
     ${m['name_ja']} (${m['elevation']})<br>
@@ -175,7 +178,8 @@ export default {
     Physical difficulty: ${this.showPhysicalDifficulty(m['physical_difficulty_min'],m['physical_difficulty_max'])}<br>
     Schedule: ${m['rough_schedule_en']}<br>
     <a href="https://yamap.com/mountains/${m['yamap_id']}" target="_blank">Yamap</a>
-    <a href="https://www.yamareco.com/modules/yamainfo/search_pt.php?searchkey=${this.convertToPercentEncodedEucjp(m['name_ja'])}&request=1" target="_blank">YamaReco</a>
+    <a href="https://www.yamareco.com/modules/yamainfo/search_pt.php?searchkey=${this.convertToPercentEncodedEucjp(m['name_ja'])}&request=1" target="_blank">YamaReco</a><br>
+    <a href="${report_form_url}" target="_blank">report</a>
 </div>`
       this.info.position = { lat: m.lat, lng: m.lng }
     },
