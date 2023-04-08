@@ -2,14 +2,14 @@
   <main>
     <h1>Peak_a_boo</h1>
     <h2>Discover Japan's Top 300 Famous Mountains</h2>
-    <label v-for="option in options" :key="option.value" :style="{'background-color': option.color}" >
-      <input v-model="selectedFamousMountains" :name="option.name" :value="option.value" type="checkbox"
-             @change="trackCheckboxToggle(`toggle ${option.label}`, 'famous mountains', option.label)">
-      {{ option.label }}
+    <label v-for="type in typeOfFamousMountain" :key="`f-${type.value}`" :style="{'background-color': type.color}" >
+      <input v-model="selectedFamousMountains" :name="type.name" :value="type.value" type="checkbox"
+             @change="trackCheckboxToggle(`toggle ${type.label}`, 'famous mountains', type.label)">
+      {{ type.label }}
     </label>
     <br>
     <span>Physical difficulty</span>
-    <label v-for="difficulty in physicalDifficulties" :key="difficulty.value">
+    <label v-for="difficulty in physicalDifficulties" :key="`d-${difficulty.value}`">
       <input type="checkbox" :name="difficulty.name" :value="difficulty.value" v-model="selectedDifficulties"
              @change="trackCheckboxToggle(`toggle ${difficulty.label}`, 'famous mountains', difficulty.label)">
       {{ difficulty.label }}
@@ -32,7 +32,7 @@
           @closeclick="closeInfoWindow"
       />
       <GmapMarker
-        :key="m['ID']"
+        :key="m['id']"
         v-for="m in filteredMarkers"
         :position="{ lat: m.lat, lng: m.lng }"
         :clickable="true"
@@ -54,10 +54,10 @@ export default {
   data() {
     return {
       mountainName: "",
-      options: [
-        { label: 'The 100', value: 1, name: 'option', color: 'red' },
-        { label: 'The 200', value: 2, name: 'option', color: 'orange' },
-        { label: 'The 300', value: 3, name: 'option', color: 'yellow' }
+      typeOfFamousMountain: [
+        { label: 'The 100', value: 1, name: 'typeOfFamousMountain', color: 'red' },
+        { label: 'The 200', value: 2, name: 'typeOfFamousMountain', color: 'orange' },
+        { label: 'The 300', value: 3, name: 'typeOfFamousMountain', color: 'yellow' }
       ],
       physicalDifficulties: [
         { label: '☆1', value: 1, name: 'physicalDifficulty' },
