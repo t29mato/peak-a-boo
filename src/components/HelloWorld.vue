@@ -2,14 +2,16 @@
   <main>
     <h1>Peak_a_boo</h1>
     <h2>Discover Japan's Top 300 Famous Mountains</h2>
-    <label v-for="option in options" :key="option.value" :style="{'background-color': option.color}">
-      <input type="checkbox" :name="option.name" :value="option.value" v-model="selectedFamousMountains">
+    <label v-for="option in options" :key="option.value" :style="{'background-color': option.color}" >
+      <input v-model="selectedFamousMountains" :name="option.name" :value="option.value" type="checkbox"
+             @change="trackCheckboxToggle(`toggle ${option.label}`, 'famous mountains', option.label)">
       {{ option.label }}
     </label>
     <br>
     <span>Physical difficulty</span>
     <label v-for="difficulty in physicalDifficulties" :key="difficulty.value">
-      <input type="checkbox" :name="difficulty.name" :value="difficulty.value" v-model="selectedDifficulties">
+      <input type="checkbox" :name="difficulty.name" :value="difficulty.value" v-model="selectedDifficulties"
+             @change="trackCheckboxToggle(`toggle ${difficulty.label}`, 'famous mountains', difficulty.label)">
       {{ difficulty.label }}
     </label>
     <br>
@@ -129,6 +131,12 @@ export default {
     }
   },
   methods: {
+    trackCheckboxToggle(name, category, label) {
+      this.$gtag.event(name, {
+        'event_category': category,
+        'event_label': label
+      });
+    },
     closeInfoWindow() {
       this.info.isOpen = false
     },
