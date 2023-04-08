@@ -3,7 +3,7 @@
     <h1>Peak_a_boo</h1>
     <h2>Discover Japan's Top 300 Famous Mountains</h2>
     <label v-for="option in options" :key="option.value" :style="{'background-color': option.color}">
-      <input type="checkbox" :name="option.name" :value="option.value" v-model="selectedOptions">
+      <input type="checkbox" :name="option.name" :value="option.value" v-model="selectedFamousMountains">
       {{ option.label }}
     </label>
     <br>
@@ -65,7 +65,7 @@ export default {
         { label: '☆5', value: 5, name: 'physicalDifficulty' },
         { label: '☆6', value: 6, name: 'physicalDifficulty' },
       ],
-      selectedOptions: [],
+      selectedFamousMountains: [],
       selectedDifficulties: [],
       map: null,
       markers: [],
@@ -90,10 +90,10 @@ export default {
   computed: {
     filteredMarkers() {
       let markers = this.markers
-      if (this.selectedOptions.length !== 0) {
+      if (this.selectedFamousMountains.length !== 0) {
         const selectedMarkers = []
         for (let i = 1; i <= 3; i++) {
-          if (this.selectedOptions.includes(i)) {
+          if (this.selectedFamousMountains.includes(i)) {
             selectedMarkers.push(...markers.filter(m => {
               if (selectedMarkers.map(marker => marker.id).includes(m.id)) {
                 return false
