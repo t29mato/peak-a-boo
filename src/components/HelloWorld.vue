@@ -1,6 +1,6 @@
 <template>
   <main>
-    <h1>Peak_a_boo</h1>
+    <h1>Peak-a-boo</h1>
     <h2>Discover Japan's Top 300 Famous Mountains</h2>
     <label v-for="type in typeOfFamousMountain" :key="`f-${type.value}`" :style="{'background-color': type.color}" >
       <input v-model="selectedFamousMountains" :name="type.name" :value="type.value" type="checkbox"
@@ -42,11 +42,24 @@
         @click="toggleInfo(m)"
       />
     </GmapMap>
+    <footer>
+      <h3>Sources and references</h3>
+      <ul>
+        <li v-for="reference in references" :key="reference.URL" style="text-align: left;">
+          <a href="reference.URL" target="_blank">
+            {{reference.page_title}}
+          </a>
+        </li>
+      </ul>
+      <h3>Origin of the name Peak-a-boo</h3>
+      <p>Peak-a-boo is a play on words in English: peek-a-boo is a word used when playing hide-and-seek with children and means "peek-a-boo. Put these two words together and you get peak-a-boo. This means "summit peek-a-boo," but in reality it has the nuance of "you can peek at 300 peaks on the map.</p>
+    </footer>
   </main>
 </template>
 
 <script lang="ts">
 import mountainsData from '@/assets/100Mountains - 300.csv';
+import referencesData from '@/assets/100Mountains - references.csv'
 import Encoding from 'encoding-japanese';
 
 export default {
@@ -81,13 +94,15 @@ export default {
             height: -35
           },
         }
-      }
+      },
+      references: [],
     }
   },
   mounted() {
   },
   created() {
     this.markers = mountainsData
+    this.references = referencesData
   },
   computed: {
     filteredMarkers() {
